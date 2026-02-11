@@ -12,6 +12,10 @@ final class HomeController extends AbstractController
     #[Route('/', name: 'home', methods: [Request::METHOD_GET])]
     public function home(): Response
     {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login_email');
+        }
+
         return $this->render('services/services.html.twig');
     }
 }

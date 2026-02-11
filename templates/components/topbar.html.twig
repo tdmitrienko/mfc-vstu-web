@@ -5,7 +5,17 @@
             <a href="#"><img src="{{ asset('build/images/tg.svg') }}" alt="Telegram"></a>
         </div>
         <div class="topbar-right">
-            <button class="lang-btn">A</button>
+            {% if app.user %}
+                <a href="{{ path('app_logout') }}" class="topbar-auth-link">
+                    <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
+                    <span>Выход</span>
+                </a>
+            {% else %}
+                <a href="{{ path('app_login_email') }}" class="topbar-auth-link">
+                    <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
+                    <span>Вход</span>
+                </a>
+            {% endif %}
         </div>
     </div>
 </div>

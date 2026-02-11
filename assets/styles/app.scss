@@ -54,6 +54,38 @@ body {
     display: block;
 }
 
+.topbar-right .topbar-auth-link{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    color: #ffffff;
+    font-weight: 600;
+    text-decoration: none;
+
+    padding: 6px 10px;
+    border-radius: 8px;
+
+    /* чуть лучше читается на фоне */
+    text-shadow: 0 1px 1px rgba(0,0,0,.25);
+}
+
+.topbar-right .topbar-auth-link i{
+    font-size: 1.1rem;
+    line-height: 1;
+}
+
+.topbar-right .topbar-auth-link:hover{
+    background: rgba(255,255,255,.14);
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.topbar-right .topbar-auth-link:focus-visible{
+    outline: 2px solid rgba(255,255,255,.9);
+    outline-offset: 2px;
+}
+
 /* =========================
    HEADER
 ========================= */
