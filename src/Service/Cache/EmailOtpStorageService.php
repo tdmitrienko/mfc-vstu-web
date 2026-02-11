@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service\Cache;
 
 use Symfony\Component\Cache\Adapter\AdapterInterface;
@@ -14,7 +16,7 @@ class EmailOtpStorageService
     {
     }
 
-    public function hasEmailOtp(string $sid, string $email): ?string
+    public function hasEmailOtp(string $sid, string $email): bool
     {
         return $this->adapter->hasItem($this->getEmailOtpKey($sid, $email));
     }

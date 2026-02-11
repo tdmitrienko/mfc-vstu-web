@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Form\EmailType;
+use App\Form\OtpType;
 use App\Service\Cache\EmailOtpStorageService;
 use App\Service\Communication\EmailSender;
 use App\Service\OtpGenerator;
@@ -34,6 +35,12 @@ class SecurityController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $email = $form->get('email')->getData();
             $session->set('email', $email);
+
+            $issetOtp = $emailOtpStorageService->hasEmailOtp($session->getId(), $email);
+            if ($issetOtp) {
+                return $this->redirectToRoute('app_login_otp');
+            }
+
             $ttlMin = 5;
             $otp = $otpGenerator->generateNumeric();
             $emailOtpStorageService->setEmailOtp($session->getId(), $email, $otp, $ttlMin * 60);
@@ -55,6 +62,30 @@ class SecurityController extends AbstractController
             'form' => $form->createView(),
             'last_username' => $lastUsername,
             'error' => $errors === [] ? null : implode(', ', $errors),
+            'last_auth_error' => $authenticationUtils->getLastAuthenticationError(),
+        ]);
+    }
+
+    #[Route(path: '/login/otp', name: 'app_login_otp', methods: ['GET', 'POST'])]
+    public function loginOtpStep(
+        AuthenticationUtils $authenticationUtils,
+        EmailOtpStorageService $emailOtpStorageService,
+        Session $session,
+    ): Response
+    {
+        if ($this->getUser()) {
+            return $this->redirectToRoute('home');
+        }
+
+        $email = $session->get('email');
+        $expiredOtp = $emailOtpStorageService->hasEmailOtp($session->getId(), $email) === false;
+        if (!$email || $expiredOtp) {
+            return $this->redirectToRoute('app_login_email');
+        }
+
+        return $this->render('security/otp.html.twig', [
+            'form' => $this->createForm(OtpType::class)->createView(),
+            'last_auth_error' => $authenticationUtils->getLastAuthenticationError(),
         ]);
     }
 

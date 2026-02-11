@@ -5,19 +5,19 @@
 {% block body %}
     <section class="hero hero-center">
         <div class="otp-box">
-            <form method="post" class="otp-form">
-                <input
-                    type="text"
-                    name="otp"
-                    placeholder="OTP"
-                    class="otp-input"
-                    required
-                >
+            {# Последняя ошибка Security (из authenticator) #}
+            {% if last_auth_error %}
+                <div class="form-error auth-error">
+                    {{ last_auth_error.messageKey|trans(last_auth_error.messageData, 'security') }}
+                </div>
+            {% endif %}
 
-                <button type="submit" class="btn-primary otp-btn">
-                    Войти
-                </button>
-            </form>
+            {{ form_start(form) }}
+                {{ form_errors(form) }}
+                {{ form_errors(form.otp) }}
+                {{ form_widget(form.otp) }}
+                {{ form_widget(form.submit) }}
+            {{ form_end(form) }}
         </div>
     </section>
 {% endblock %}

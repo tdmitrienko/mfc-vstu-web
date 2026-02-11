@@ -5,17 +5,22 @@
 {% block body %}
     <section class="hero hero-center">
         <div class="form-box">
+            {# Последняя ошибка Security (из authenticator) #}
+            {% if last_auth_error %}
+                <div class="form-error auth-error">
+                    {{ last_auth_error.messageKey|trans(last_auth_error.messageData, 'security') }}
+                </div>
+            {% endif %}
+
             {{ form_start(form) }}
+                {# Глобальные ошибки формы #}
+                {{ form_errors(form) }}
 
-            {# Глобальные ошибки формы #}
-            {{ form_errors(form) }}
+                {# Поле email + его ошибки #}
+                {{ form_widget(form.email) }}
+                {{ form_errors(form.email) }}
 
-            {# Поле email + его ошибки #}
-            {{ form_widget(form.email) }}
-            {{ form_errors(form.email) }}
-
-            {{ form_widget(form.submit) }}
-
+                {{ form_widget(form.submit) }}
             {{ form_end(form) }}
         </div>
     </section>
