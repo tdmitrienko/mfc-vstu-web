@@ -17,6 +17,8 @@ class SecurityController extends AbstractController
         AuthenticationUtils $authenticationUtils,
         Request $request,
         Session $session,
+        OtpGenerator $otpGenerator,
+        EmailOtpStorageService $emailOtpStorageService,
     ): Response
     {
         if ($this->getUser()) {

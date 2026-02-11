@@ -27,6 +27,14 @@ services:
 
     Psr\Http\Client\ClientInterface: '@GuzzleHttp\Client'
 
+    App\Service\Cache\EmailOtpStorageService:
+        arguments:
+            $adapter: '@cache.app'
+
+    App\Service\OtpGenerator:
+        arguments:
+            $length: 6
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
