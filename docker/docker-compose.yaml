@@ -110,6 +110,14 @@ services:
         volumes:
             - ../tests/_output/downloads:/home/seluser/Downloads
 
+    mailpit:
+        container_name: ${PROJECT_NAME}_mailpit
+        image: axllent/mailpit:latest
+        ports:
+            - ${MAILPIT_VIEW_PORT}:8025  # Web UI
+#            - "1025:1025"  # SMTP
+        restart: unless-stopped
+
 networks:
     default:
         name: ${PROJECT_NAME}_network
