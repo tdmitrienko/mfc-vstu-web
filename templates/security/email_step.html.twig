@@ -5,19 +5,18 @@
 {% block body %}
     <section class="hero hero-center">
         <div class="form-box">
-            <form method="post">
-                <input
-                    type="email"
-                    name="email"
-                    placeholder="Введите адрес электронной почты"
-                    class="form-input"
-                    required
-                >
+            {{ form_start(form) }}
 
-                <button type="submit" class="btn-primary">
-                    Далее
-                </button>
-            </form>
+            {# Глобальные ошибки формы #}
+            {{ form_errors(form) }}
+
+            {# Поле email + его ошибки #}
+            {{ form_widget(form.email) }}
+            {{ form_errors(form.email) }}
+
+            {{ form_widget(form.submit) }}
+
+            {{ form_end(form) }}
         </div>
     </section>
 {% endblock %}
