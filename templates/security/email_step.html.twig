@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ввод email{% endblock %}
+
+{% block body %}
+    <section class="hero hero-center">
+        <div class="form-box">
+            <form method="post">
+                <input
+                    type="email"
+                    name="email"
+                    placeholder="Введите адрес электронной почты"
+                    class="form-input"
+                    required
+                >
+
+                <button type="submit" class="btn-primary">
+                    Далее
+                </button>
+            </form>
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Выбор услуги{% endblock %}
+
+{% block body %}
+    <section class="hero services-page">
+        <div class="container services-container">
+
+            <h2 class="services-title">
+                ВЫБЕРИТЕ ИНТЕРЕСУЮЩУЮ ВАС УСЛУГУ
+            </h2>
+
+            <div class="services-list">
+
+                <a href="{{ path('app_mfc') }}" class="service-item">
+                    <div class="service-icon">
+                        <i class="bi bi-file-earmark-text"></i>
+                    </div>
+                    <span>МФЦ</span>
+                </a>
+
+                <a href="{{ path('app_mfc_status') }}" class="service-item">
+                    <div class="service-icon">
+                        <i class="bi bi-file-earmark-text"></i>
+                    </div>
+                    <span>Просмотреть статусы поданных заявок</span>
+                </a>
+
+            </div>
+
+        </div>
+    </section>
+{% endblock %}

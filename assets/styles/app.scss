@@ -1,0 +1,505 @@
+@import "~bootstrap/scss/bootstrap";
+@import "~bootstrap-icons/font/bootstrap-icons.scss";
+
+/* =========================
+   БАЗА
+========================= */
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    font-family: Arial, sans-serif;
+    background: #f5f5f5;
+}
+
+/* Контейнер */
+.container {
+    width: 90%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* =========================
+   TOPBAR
+========================= */
+
+.topbar {
+    background: #5e79a8;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    color: white;
+}
+
+.topbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.topbar-left img {
+    height: 20px;
+    width: auto;
+    display: block;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.header {
+    background: white;
+    padding: 20px 0;
+}
+
+.header-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo img {
+    max-height: 70px;
+    height: auto;
+    width: auto;
+}
+
+.logo-text strong {
+    font-size: 18px;
+    color: #3d5f97;
+}
+
+.logo-text span {
+    font-size: 14px;
+    color: #6b6b6b;
+}
+
+/* =========================
+   SEARCH
+========================= */
+
+.search-form {
+    display: flex;
+    border: 2px solid #5e79a8;
+    border-radius: 25px;
+    overflow: hidden;
+}
+
+.search-form input {
+    border: none;
+    padding: 10px 15px;
+    outline: none;
+    width: 250px;
+}
+
+.search-form button {
+    background: none;
+    border: none;
+    padding: 0 15px;
+    cursor: pointer;
+}
+
+/* =========================
+   MAIN LAYOUT (без скролла)
+========================= */
+
+main {
+    flex: 1;
+    display: flex;
+}
+
+/* =========================
+   HERO
+========================= */
+
+.hero {
+    flex: 1;
+    background: url('../images/hero-bg.png') center/cover no-repeat;
+}
+
+/* Центрирование формы */
+.hero-center {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* =========================
+   FORM
+========================= */
+
+.form-box {
+    width: 100%;
+    max-width: 400px;
+    padding: 40px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    outline: none;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    background: #5e79a8;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-primary:hover {
+    background: #3d5f97;
+}
+/* =========================
+   OTP PAGE
+========================= */
+
+.otp-box {
+    width: 100%;
+    max-width: 400px;
+}
+
+.otp-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+}
+
+.otp-input {
+    width: 100%;
+    padding: 14px 18px;
+    border: 2px solid #5e79a8;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.85);
+    outline: none;
+    font-size: 16px;
+    text-align: center;
+}
+
+.otp-input:focus {
+    border-color: #3d5f97;
+}
+
+.otp-btn {
+    width: 200px;
+}
+/* =========================
+   SERVICES PAGE
+========================= */
+
+.services-page {
+    flex: 1;
+    display: flex;
+    align-items: flex-start;
+    padding-top: 80px;
+}
+
+.services-container {
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
+}
+
+.services-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: #3d5f97;
+}
+
+.services-list {
+    display: flex;
+    gap: 80px;
+    align-items: center;
+}
+
+.service-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    text-decoration: none;
+    color: #3d5f97;
+    font-weight: 500;
+    transition: 0.2s;
+}
+
+.service-item:hover {
+    opacity: 0.8;
+}
+
+/* Шестиугольная иконка */
+.service-icon {
+    width: 80px;
+    height: 80px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.service-icon::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: #ffffff;
+    clip-path: polygon(
+            25% 6%,
+            75% 6%,
+            100% 50%,
+            75% 94%,
+            25% 94%,
+            0% 50%
+    );
+}
+
+.service-icon::after {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    background: #5e79a8;
+    clip-path: polygon(
+            25% 6%,
+            75% 6%,
+            100% 50%,
+            75% 94%,
+            25% 94%,
+            0% 50%
+    );
+    z-index: -1;
+}
+
+.service-icon i {
+    font-size: 28px;
+    color: #5e79a8;
+    position: relative;
+    z-index: 2;
+}
+
+/* ============================= */
+/*        ФОРМА МФЦ              */
+/* ============================= */
+
+/* Контейнер формы (широкая версия) */
+.form-wide {
+    width: 450px;
+}
+
+/* Основная структура формы */
+.mfc-form {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+/* Выпадающий список */
+.form-select {
+    border: 2px solid #5e79a8;
+    padding: 12px 15px;
+    border-radius: 6px;
+    outline: none;
+    background: #ffffff;
+    color: #3d5f97;
+    appearance: none;
+    font-size: 14px;
+}
+
+/* ============================= */
+/*         БЛОК КНОПОК           */
+/* ============================= */
+
+.form-actions {
+    display: flex;
+    justify-content: center;   /* центрируем */
+    gap: 20px;                 /* отступ между кнопками */
+    margin-top: 30px;
+}
+
+/* Общие стили для кнопок */
+.form-actions .btn-outline,
+.form-actions .btn-primary {
+    width: 180px;              /* одинаковая ширина */
+    height: 50px;              /* одинаковая высота */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-size: 15px;
+    white-space: nowrap;       /* запрет переноса текста */
+    transition: 0.2s ease;
+}
+
+/* Кнопка "Назад" */
+.btn-outline {
+    border: 2px solid #5e79a8;
+    background: #ffffff;
+    color: #3d5f97;
+    text-decoration: none;
+}
+
+.btn-outline:hover {
+    background: #5e79a8;
+    color: #ffffff;
+}
+
+/* Основная кнопка */
+.btn-primary {
+    background: #5e79a8;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    background: #4c6694;
+}
+/* ============================= */
+/*         UPLOAD PAGE           */
+/* ============================= */
+
+.upload-wrapper {
+    display: flex;
+    gap: 60px;
+    justify-content: center;
+    margin: 60px 0;
+}
+
+.upload-box {
+    width: 180px;
+    height: 180px;
+    border: 2px solid #5e79a8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    transition: 0.2s ease;
+    overflow: hidden;              /* важно */
+}
+
+.upload-box:hover {
+    background: rgba(94, 121, 168, 0.08);
+}
+
+.upload-box i {
+    font-size: 48px;
+    color: #5e79a8;
+    pointer-events: none;          /* чтобы клик проходил к input */
+}
+
+/* Правильное скрытие file input */
+.file-input {
+    position: absolute;
+    inset: 0;                      /* растягиваем на весь блок */
+    opacity: 0;                    /* делаем невидимым */
+    cursor: pointer;
+}
+
+
+/* ============================= */
+/*         SUCCESS PAGE          */
+/* ============================= */
+
+.success-box {
+    text-align: center;
+}
+
+.success-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.success-icon i {
+    font-size: 70px;
+    color: #5e79a8;
+}
+
+.success-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: #3d5f97;
+    margin: 0;
+}
+
+.success-text {
+    font-size: 14px;
+    color: #6b6b6b;
+    line-height: 1.5;
+}
+
+.success-actions {
+    margin-top: 20px;
+    justify-content: center;
+}
+/* ============================= */
+/*        STATUS PAGE            */
+/* ============================= */
+
+.status-container {
+    width: 100%;
+    max-width: 1100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 60px;
+}
+
+.status-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255,255,255,0.9);
+}
+
+.status-table th,
+.status-table td {
+    border: 2px solid #5e79a8;
+    padding: 20px;
+    text-align: left;
+    color: #3d5f97;
+}
+
+.status-table th {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.status-table td {
+    height: 100px;
+    vertical-align: top;
+}
+
+/* Кнопка снизу */
+.status-actions {
+    display: flex;
+    justify-content: center;
+}

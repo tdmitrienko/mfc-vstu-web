@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <section class="hero hero-center">
+
+        <div class="form-box form-wide">
+
+            <form method="post"
+                  enctype="multipart/form-data"
+                  class="upload-form">
+
+                <div class="upload-wrapper">
+
+                    <label class="upload-box">
+                        <input type="file"
+                               name="document"
+                               class="file-input"
+                               required>
+                        <i class="bi bi-paperclip"></i>
+                    </label>
+
+                    <label class="upload-box">
+                        <input type="file"
+                               name="passport"
+                               class="file-input"
+                               required>
+                        <i class="bi bi-paperclip"></i>
+                    </label>
+
+                </div>
+
+                <div class="form-actions">
+                    <a href="{{ path('app_mfc') }}" class="btn-outline">
+                        Назад
+                    </a>
+
+                    <button type="submit" class="btn-primary">
+                        Далее
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </section>
+{% endblock %}

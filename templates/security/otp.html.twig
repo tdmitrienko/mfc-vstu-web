@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ввод кода{% endblock %}
+
+{% block body %}
+    <section class="hero hero-center">
+        <div class="otp-box">
+            <form method="post" class="otp-form">
+                <input
+                    type="text"
+                    name="otp"
+                    placeholder="OTP"
+                    class="otp-input"
+                    required
+                >
+
+                <button type="submit" class="btn-primary otp-btn">
+                    Войти
+                </button>
+            </form>
+        </div>
+    </section>
+{% endblock %}

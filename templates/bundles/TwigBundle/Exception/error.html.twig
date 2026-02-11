@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ошибка {{ status_code }}{% endblock %}
+
+{% block body %}
+    <div class="d-flex flex-column justify-content-start align-items-center text-center px-3">
+        <div class="card shadow-lg p-4 bg-body-secondary border-danger-subtle" style="max-width: 500px;">
+
+            <div class="d-flex justify-content-center align-items-center mb-4" style="line-height: 1;">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     class="text-danger me-3"
+                     style="display:block; width:100px; height:100px;"
+                     fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <circle cx="12" cy="12" r="10" stroke-width="2" stroke="currentColor" fill="none"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01"/>
+                </svg>
+
+                <h1 class="fw-bold mb-0" style="font-size: 6rem; line-height: 1;">
+                    {% block status_code %}{{ status_code }}{% endblock %}
+                </h1>
+            </div>
+
+            {% block message %}
+                <div class="alert alert-danger text-start small mb-4">
+                    {{ message }}
+                </div>
+            {% endblock %}
+
+            {% if trace is defined and trace and app.environment is same as('dev') %}
+                <div class="container mb-4 p-0 d-none d-md-block">
+                    <div class="border rounded-3 overflow-hidden border-danger-subtle">
+                        <div class="bg-danger-subtle px-3 py-2 d-flex justify-content-between align-items-center"
+                             role="button" data-bs-toggle="collapse" data-bs-target="#traceCollapse">
+                            <span class="text-danger-emphasis small">Stack trace</span>
+                            <i class="bi bi-chevron-down small"></i>
+                        </div>
+                        <div id="traceCollapse" class="collapse">
+                            <div class="bg-danger-subtle px-3 py-2">
+                                <pre class="text-start small text-nowrap m-0"> {% for row in trace %}{{ row }}{% if not loop.last %}<br>{% endif %}{% endfor %} </pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <a href="{{ path('app_services') }}" class="btn btn-outline-secondary d-inline-flex align-items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" style="width: 18px; height: 18px;"
+                     fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+                <span>Вернуться на главную</span>
+            </a>
+
+            <p class="text-muted mt-4 mb-0 small">
+                Если ошибка повторяется — обратитесь к администратору системы.
+            </p>
+
+        </div>
+    </div>
+{% endblock %}
+

@@ -1,0 +1,69 @@
+# Codeception Acceptance Test Suite Configuration
+#
+# Perform tests in a browser by either emulating one using PhpBrowser, or in a real browser using WebDriver.
+# If you need both WebDriver and PhpBrowser tests, create a separate suite for each.
+
+actor: AcceptanceTester
+modules:
+    enabled:
+        - WebDriver:
+              url: '%WEB_DRIVER_APP_URL%'
+              host: "%WEB_DRIVER_HOST%"
+              port: "%WEB_DRIVER_PORT%"
+              browser: '%WEB_DRIVER_BROWSER%'
+              restart: true
+              window_size: 1280x1024
+              capabilities:
+                  acceptInsecureCerts: true
+                  goog:chromeOptions:
+                      args: [
+                          "--allowed-origins=*",
+                          "--remote-allow-origins=*",
+                          "--disable-gpu",
+                          "--disable-dev-shm-usage",
+                          "--disable-extensions",
+                          "--no-sandbox",
+                          "--useragent=chrome",
+                          "--disable-setuid-sandbox",
+                          "--cap-add SYS_ADMIN",
+                          "--no-first-run",
+                          "--allow-insecure-localhost",
+                          "--ignore-certificate-errors",
+                          "--reduce-security-for-testing",
+                          "--enable-features=NetworkService",
+                          "--ignore-ssl-errors=yes",
+                      ]
+        - Symfony:
+              app_path: 'src'
+              environment: 'test'
+              debug: false
+              part: SERVICES
+        - Doctrine2:
+              depends: Symfony
+              cleanup: false
+              transactional: false
+        - Db:
+              dsn: 'pgsql:host=postgres;port=5432;dbname=app_test;user=app;password=!ChangeMe!'
+              user: 'app'
+              password: '!ChangeMe!'
+              cleanup: true
+              populate: true
+              populator: 'php bin/console doctrine:migrations:migrate --no-interaction --env=test'
+        - Asserts
+# Add Codeception\Step\Retry trait to AcceptanceTester to enable retries
+step_decorators:
+    - Codeception\Step\ConditionalAssertion
+    - Codeception\Step\TryTo
+    - Codeception\Step\Retry
+coverage:
+    remote: true
+    c3_url: '%WEB_DRIVER_APP_URL%'
+    exclude:
+        - src/Controller/Api/*
+    # https://github.com/Codeception/Codeception/issues/1474 and https://github.com/Codeception/Codeception/pull/1524/files
+    remote_context_options:
+        http:
+            timeout: 60
+        ssl:
+            verify_peer: false
+            verify_peer_name: false

@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <section class="hero hero-center">
+
+        <div class="form-box form-wide success-box">
+
+            <div class="success-content">
+
+                <div class="success-icon">
+                    <i class="bi bi-check-circle"></i>
+                </div>
+
+                <h2 class="success-title">
+                    Заявка успешно отправлена
+                </h2>
+
+                <p class="success-text">
+                    Ваша заявка принята в обработку.<br>
+                    Статус можно отслеживать в разделе "Посмотреть статусы поданных заявок".
+                </p>
+
+                <div class="form-actions success-actions">
+                    <a href="{{ path('app_services') }}" class="btn-outline">
+                        На главную страницу
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+{% endblock %}

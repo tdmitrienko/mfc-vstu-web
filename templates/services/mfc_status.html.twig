@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <section class="hero hero-center">
+
+        <div class="status-container">
+
+            <table class="status-table">
+                <thead>
+                <tr>
+                    <th>ЗАЯВКА</th>
+                    <th>ДАТА ПОДАЧИ</th>
+                    <th>СОСТОЯНИЕ</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Заявка №1 Получение справки студента</td>
+                    <td>12.03.2025</td>
+                    <td>Подано</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="status-actions">
+                <a href="{{ path('app_services') }}" class="btn-outline">
+                    На главную страницу
+                </a>
+            </div>
+
+        </div>
+
+    </section>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <section class="hero hero-center">
+
+        <div class="form-box form-wide">
+
+            <form class="mfc-form">
+
+                <input
+                    type="text"
+                    class="form-input"
+                    placeholder="Введите номер зачетной книжки"
+                    required
+                >
+
+                <select class="form-select" required>
+                    <option value="" disabled selected>Выберите справку</option>
+                    <option>Справка об обучении</option>
+                    <option>Справка о доходах</option>
+                    <option>Справка о составе семьи</option>
+                </select>
+
+                <div class="form-actions">
+                    <a href="{{ path('app_services') }}" class="btn-outline">
+                        Вернуться на главную
+                    </a>
+                    <a href="{{ path('app_mfc_upload') }}" class="btn-primary">
+                        Далее
+                    </a>
+                </div>
+
+            </form>
+
+        </div>
+
+    </section>
+{% endblock %}

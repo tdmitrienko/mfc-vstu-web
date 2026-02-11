@@ -1,0 +1,38 @@
+{
+  "dependencies": {
+    "@popperjs/core": "^2.11.8",
+    "bootstrap": "^5.3.8",
+    "bootstrap-icons": "^1.13.1",
+    "core-js": "^3.46.0"
+  },
+  "name": "www",
+  "version": "1.0.0",
+  "description": "",
+  "main": "webpack.config.js",
+  "scripts": {
+    "build-dev": "encore dev",
+    "build-dev-watch": "encore dev --watch",
+    "build-prod": "encore production",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SashaSunsh1ne/user-activity-analysis.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SashaSunsh1ne/user-activity-analysis/issues"
+  },
+  "homepage": "https://github.com/SashaSunsh1ne/user-activity-analysis#readme",
+  "devDependencies": {
+    "@symfony/webpack-encore": "^5.2.0",
+    "css-loader": "^7.1.2",
+    "sass": "^1.93.2",
+    "sass-loader": "^16.0.5",
+    "style-loader": "^4.0.0",
+    "webpack": "^5.101.3",
+    "webpack-cli": "^6.0.1"
+  }
+}
