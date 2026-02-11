@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="x-apple-disable-message-reformatting">
+    <title>Login code</title>
+    <style>
+        /* Some clients strip <style>, but this improves in Gmail/Apple Mail */
+        @media (max-width: 600px) {
+            .container { width: 100% !important; padding: 0 12px !important; }
+            .card { padding: 18px !important; }
+            .otp { font-size: 28px !important; letter-spacing: 6px !important; }
+            .btn { display: block !important; width: 100% !important; }
+        }
+    </style>
+</head>
+
+<body style="margin:0; padding:0; background:#f5f7fb;">
+{# Preheader (hidden preview text in inbox) #}
+<div style="display:none; max-height:0; overflow:hidden; opacity:0; color:transparent;">
+    Your one-time login code is {{ otp }}. Expires in {{ ttlMinutes }} minutes.
+</div>
+
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#f5f7fb;">
+    <tr>
+        <td align="center" style="padding: 28px 12px;">
+            <table role="presentation" class="container" width="600" cellspacing="0" cellpadding="0" border="0" style="width:600px; max-width:600px;">
+                {# Header #}
+                <tr>
+                    <td style="padding: 0 0 14px 0;">
+                        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; color:#111827;">
+                            <div style="font-size:14px; font-weight:700; letter-spacing:0.2px;">
+                                {{ app_name|default('Your App') }}
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+
+                {# Card #}
+                <tr>
+                    <td class="card" style="background:#ffffff; border:1px solid #e5e7eb; border-radius:16px; padding:24px;">
+                        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; color:#111827;">
+                            <h1 style="margin:0 0 8px 0; font-size:20px; line-height:1.25;">
+                                Your login code
+                            </h1>
+
+                            <p style="margin:0 0 16px 0; font-size:14px; line-height:1.6; color:#374151;">
+                                Use this one-time code to sign in{% if toEmail is defined and toEmail %} as <strong>{{ toEmail }}</strong>{% endif %}.
+                                This code expires in <strong>{{ ttlMinutes }} minutes</strong>.
+                            </p>
+
+                            {# OTP block #}
+                            <div style="margin: 0 0 18px 0; padding: 16px; background:#f9fafb; border:1px solid #e5e7eb; border-radius:12px; text-align:center;">
+                                <div style="font-size:12px; color:#6b7280; margin-bottom:8px;">
+                                    One-time code
+                                </div>
+                                <div class="otp" style="font-size:32px; font-weight:800; letter-spacing:8px; color:#111827;">
+                                    {{ otp }}
+                                </div>
+                            </div>
+
+                            {# Optional "button" - usually not needed for OTP, but looks modern #}
+                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin: 0 0 16px 0;">
+                                <tr>
+                                    <td>
+                                        <a class="btn"
+                                           href="{{ login_url|default('#') }}"
+                                           style="background:#2563eb; color:#ffffff; text-decoration:none; padding:12px 16px; border-radius:10px; display:inline-block; font-weight:700; font-size:14px;">
+                                            Go to sign in
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <p style="margin:0; font-size:12px; line-height:1.6; color:#6b7280;">
+                                Didn’t request this code? You can safely ignore this email.
+                                For your security, don’t share this code with anyone.
+                            </p>
+                        </div>
+                    </td>
+                </tr>
+
+                {# Footer #}
+                <tr>
+                    <td style="padding: 14px 6px 0 6px;">
+                        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; font-size:12px; color:#9ca3af; line-height:1.6; text-align:center;">
+                            © {{ "now"|date("Y") }} {{ app_name|default('Your App') }}.
+                            {% if support_email is defined and support_email %}
+                                Need help? Contact <a href="mailto:{{ support_email }}" style="color:#6b7280; text-decoration:underline;">{{ support_email }}</a>.
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

@@ -26,12 +26,12 @@ class EmailOtpStorageService
         return $item->get();
     }
 
-    public function setEmailOtp(string $sid, string $email, string $otp, int $ttl): void
+    public function setEmailOtp(string $sid, string $email, string $otp, int $ttlSec): void
     {
         $item = $this->adapter->getItem($this->getEmailOtpKey($sid, $email));
 
         $item->set($otp);
-        $item->expiresAt(new \DateTimeImmutable("+$ttl seconds"));
+        $item->expiresAt(new \DateTimeImmutable("+$ttlSec seconds"));
         $this->adapter->save($item);
     }
 

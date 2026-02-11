@@ -3,6 +3,9 @@
 namespace App\Controller;
 
 use App\Form\EmailType;
+use App\Service\Cache\EmailOtpStorageService;
+use App\Service\Communication\EmailSender;
+use App\Service\OtpGenerator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,6 +22,7 @@ class SecurityController extends AbstractController
         Session $session,
         OtpGenerator $otpGenerator,
         EmailOtpStorageService $emailOtpStorageService,
+        EmailSender $emailSender,
     ): Response
     {
         if ($this->getUser()) {
@@ -30,9 +34,11 @@ class SecurityController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $email = $form->get('email')->getData();
             $session->set('email', $email);
+            $ttlMin = 5;
+            $otp = $otpGenerator->generateNumeric();
+            $emailOtpStorageService->setEmailOtp($session->getId(), $email, $otp, $ttlMin * 60);
 
-            //1) отправляем OTP, сохраняем его
-            //2) пишем OTP + email в кэш на 5 минут
+            $emailSender->sendOtpLoginEmail($email, $otp, $ttlMin);
 
             return $this->redirectToRoute('app_login_otp');
         }
