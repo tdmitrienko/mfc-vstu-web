@@ -22,7 +22,7 @@ class UserService
 
         $user = (new User())
             ->setEmail($email)
-            ->setRoles(['ROLE_USER']);
+            ->setRoles(['ROLE_STUDENT']);
 
         $this->userRepository->save($user);
 
