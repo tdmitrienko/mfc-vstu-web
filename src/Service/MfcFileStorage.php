@@ -25,13 +25,14 @@ final class MfcFileStorage
         $ext = $file->guessExtension() ?: $file->getClientOriginalExtension() ?: 'bin';
         $name = ByteString::fromRandom(24)->toString().'.'.$ext;
 
+        $size = $file->getSize();
         $file->move($targetDir, $name);
 
         $entity = new MfcRequestFile();
         $entity->setPath($subDir.'/'.$name);
         $entity->setOriginalName($file->getClientOriginalName());
         $entity->setMimeType($file->getClientMimeType());
-        $entity->setSize($file->getSize());
+        $entity->setSize($size);
         $req->addFile($entity);
 
         return $entity;

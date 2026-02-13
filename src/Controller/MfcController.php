@@ -128,7 +128,7 @@ class MfcController extends AbstractController
             $req->touch();
             $em->flush();
 
-            return $this->redirectToRoute('mfc_success');
+            return $this->render('mfc/success.html.twig');
         }
 
         return $this->render('mfc/step2.html.twig', [
@@ -165,12 +165,6 @@ class MfcController extends AbstractController
         }
 
         return $this->redirectToRoute('mfc_step1', ['id' => $req->getId()]);
-    }
-
-    #[Route('/success', name: 'mfc_success')]
-    public function mfcSuccess(): Response
-    {
-        return $this->render('mfc/success.html.twig');
     }
 
     #[Route('/status', name: 'mfc_status')]
