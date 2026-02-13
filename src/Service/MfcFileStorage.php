@@ -32,7 +32,6 @@ final class MfcFileStorage
         $entity->setOriginalName($file->getClientOriginalName());
         $entity->setMimeType($file->getClientMimeType());
         $entity->setSize($file->getSize());
-
         $req->addFile($entity);
 
         return $entity;

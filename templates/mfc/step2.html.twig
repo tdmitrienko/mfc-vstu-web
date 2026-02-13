@@ -4,12 +4,14 @@
     <section class="hero hero-center">
         <div class="form-box form-wide">
             {{ form_start(form) }}
+            {{ form_errors(form) }}
             <div class="upload-wrapper">
                 <label class="upload-box">
                     {{ form_widget(form.files) }}
                     <i class="bi bi-paperclip"></i>
                 </label>
             </div>
+            {{ form_errors(form.files) }}
 
             <div class="form-actions">
                 <button type="button" class="btn-outline" onclick="mfcBack()">
