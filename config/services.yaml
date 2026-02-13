@@ -4,6 +4,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    mfc_upload_dir: '%kernel.project_dir%/public/uploads/mfc'
 
 services:
     # default configuration for services in *this* file
@@ -40,6 +41,10 @@ services:
             $fromEmail: '%env(MAIL_FROM_EMAIL)%'
             $supportEmail: '%env(MAIL_SUPPORT_EMAIL)%'
             $fromName: '%env(MAIL_FROM_NAME)%'
+
+    App\Service\MfcFileStorage:
+        arguments:
+            $uploadDir: '%mfc_upload_dir%'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

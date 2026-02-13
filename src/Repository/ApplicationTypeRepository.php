@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\ApplicationType;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,28 +17,21 @@ class ApplicationTypeRepository extends ServiceEntityRepository
         parent::__construct($registry, ApplicationType::class);
     }
 
-    //    /**
-    //     * @return ApplicationType[] Returns an array of ApplicationType objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('a.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * @return ApplicationType[]
+     */
+    public function findSuitableByUser(User $user): array
+    {
+        $applicationTypes = $this->findAll();
 
-    //    public function findOneBySomeField($value): ?ApplicationType
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        $suitable = [];
+        foreach ($applicationTypes as $applicationType) {
+            $hasAny = !empty(array_intersect($applicationType->getRoles(), $user->getRoles()));
+            if ($hasAny) {
+                $suitable[] = $applicationType;
+            }
+        }
+
+        return $suitable;
+    }
 }

@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <section class="hero hero-center">
+        <div class="form-box form-wide">
+            {{ form_start(form) }}
+            {# Глобальные ошибки формы #}
+            {{ form_errors(form) }}
+
+            {# Поле documentNumber + его ошибки #}
+            {{ form_widget(form.documentNumber) }}
+            {{ form_errors(form.documentNumber) }}
+
+            {# Поле applicationType + его ошибки #}
+            {{ form_widget(form.applicationType) }}
+            {{ form_errors(form.applicationType) }}
+
+            <div class="form-actions">
+                <a href="{{ path('dashboard') }}" class="btn-outline">
+                    Вернуться на главную
+                </a>
+                {{ form_widget(form.submit) }}
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+    </section>
+{% endblock %}

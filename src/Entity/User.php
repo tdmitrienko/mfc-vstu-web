@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -24,6 +26,17 @@ class User implements UserInterface
      */
     #[ORM\Column]
     private array $roles = [];
+
+    /**
+     * @var Collection<int, MfcRequest>
+     */
+    #[ORM\OneToMany(targetEntity: MfcRequest::class, mappedBy: 'owner', orphanRemoval: true)]
+    private Collection $mfcRequests;
+
+    public function __construct()
+    {
+        $this->mfcRequests = new ArrayCollection();
+    }
 
 
     public function getId(): ?int
@@ -82,5 +95,35 @@ class User implements UserInterface
     public function eraseCredentials(): void
     {
         // @deprecated, to be removed when upgrading to Symfony 8
+    }
+
+    /**
+     * @return Collection<int, MfcRequest>
+     */
+    public function getMfcRequests(): Collection
+    {
+        return $this->mfcRequests;
+    }
+
+    public function addMfcRequest(MfcRequest $mfcRequest): static
+    {
+        if (!$this->mfcRequests->contains($mfcRequest)) {
+            $this->mfcRequests->add($mfcRequest);
+            $mfcRequest->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMfcRequest(MfcRequest $mfcRequest): static
+    {
+        if ($this->mfcRequests->removeElement($mfcRequest)) {
+            // set the owning side to null (unless already changed)
+            if ($mfcRequest->getOwner() === $this) {
+                $mfcRequest->setOwner(null);
+            }
+        }
+
+        return $this;
     }
 }
