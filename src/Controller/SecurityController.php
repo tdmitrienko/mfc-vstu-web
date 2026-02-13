@@ -27,7 +27,7 @@ class SecurityController extends AbstractController
     ): Response
     {
         if ($this->getUser()) {
-            return $this->redirectToRoute('home');
+            return $this->redirectToRoute('dashboard');
         }
 
         $form = $this->createForm(EmailType::class);
@@ -74,7 +74,7 @@ class SecurityController extends AbstractController
     ): Response
     {
         if ($this->getUser()) {
-            return $this->redirectToRoute('home');
+            return $this->redirectToRoute('dashboard');
         }
 
         $email = $session->get('email');
