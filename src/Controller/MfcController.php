@@ -10,13 +10,13 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/mfc')]
 class MfcController extends AbstractController
 {
-    #[Route('/', name: 'app_mfc')]
+    #[Route('/', name: 'mfc')]
     public function mfc(): Response
     {
         return $this->render('mfc/index.html.twig');
     }
 
-    #[Route('/upload', name: 'app_mfc_upload')]
+    #[Route('/upload', name: 'mfc_upload')]
     public function mfcUpload(Request $request): Response
     {
         // Если нажали кнопку "Далее"
@@ -24,19 +24,19 @@ class MfcController extends AbstractController
 
             // Здесь позже будет логика загрузки файлов
 
-            return $this->redirectToRoute('app_mfc_success');
+            return $this->redirectToRoute('mfc_success');
         }
 
         return $this->render('mfc/upload.html.twig');
     }
 
-    #[Route('/success', name: 'app_mfc_success')]
+    #[Route('/success', name: 'mfc_success')]
     public function mfcSuccess(): Response
     {
         return $this->render('mfc/success.html.twig');
     }
 
-    #[Route('/status', name: 'app_mfc_status')]
+    #[Route('/status', name: 'mfc_status')]
     public function mfcStatus(): Response
     {
         return $this->render('mfc/status.html.twig');
