@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="x-apple-disable-message-reformatting">
-    <title>Login code</title>
+    <title>Ваш одноразовый код</title>
     <style>
         /* Some clients strip <style>, but this improves in Gmail/Apple Mail */
         @media (max-width: 600px) {
@@ -19,7 +19,7 @@
 <body style="margin:0; padding:0; background:#f5f7fb;">
 {# Preheader (hidden preview text in inbox) #}
 <div style="display:none; max-height:0; overflow:hidden; opacity:0; color:transparent;">
-    Your one-time login code is {{ otp }}. Expires in {{ ttlMinutes }} minutes.
+    Ваш одноразовый код &mdash; {{ otp }}. Действует {{ ttlMinutes }} минут.
 </div>
 
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#f5f7fb;">
@@ -31,7 +31,7 @@
                     <td style="padding: 0 0 14px 0;">
                         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; color:#111827;">
                             <div style="font-size:14px; font-weight:700; letter-spacing:0.2px;">
-                                {{ app_name|default('Your App') }}
+                                {{ app_name|default('МФЦ ВГТУ') }}
                             </div>
                         </div>
                     </td>
@@ -42,18 +42,18 @@
                     <td class="card" style="background:#ffffff; border:1px solid #e5e7eb; border-radius:16px; padding:24px;">
                         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; color:#111827;">
                             <h1 style="margin:0 0 8px 0; font-size:20px; line-height:1.25;">
-                                Your login code
+                                Ваш одноразовый код
                             </h1>
 
                             <p style="margin:0 0 16px 0; font-size:14px; line-height:1.6; color:#374151;">
-                                Use this one-time code to sign in{% if toEmail is defined and toEmail %} as <strong>{{ toEmail }}</strong>{% endif %}.
-                                This code expires in <strong>{{ ttlMinutes }} minutes</strong>.
+                                Ваш одноразовый код для входа на сайт{% if toEmail is defined and toEmail %} под учетной записью <strong>{{ toEmail }}</strong>{% endif %}.
+                                Действует <strong>{{ ttlMinutes }} минут</strong>.
                             </p>
 
                             {# OTP block #}
                             <div style="margin: 0 0 18px 0; padding: 16px; background:#f9fafb; border:1px solid #e5e7eb; border-radius:12px; text-align:center;">
                                 <div style="font-size:12px; color:#6b7280; margin-bottom:8px;">
-                                    One-time code
+                                    Одноразовый код
                                 </div>
                                 <div class="otp" style="font-size:32px; font-weight:800; letter-spacing:8px; color:#111827;">
                                     {{ otp }}
@@ -67,15 +67,15 @@
                                         <a class="btn"
                                            href="{{ login_url|default('#') }}"
                                            style="background:#2563eb; color:#ffffff; text-decoration:none; padding:12px 16px; border-radius:10px; display:inline-block; font-weight:700; font-size:14px;">
-                                            Go to sign in
+                                            Перейти к вводу кода
                                         </a>
                                     </td>
                                 </tr>
                             </table>
 
                             <p style="margin:0; font-size:12px; line-height:1.6; color:#6b7280;">
-                                Didn’t request this code? You can safely ignore this email.
-                                For your security, don’t share this code with anyone.
+                                Не запрашивали код? Вы можете просто проигнорировать это сообщение.
+                                Для вашей безопасности, никому не сообщайте код из этого сообщения.
                             </p>
                         </div>
                     </td>
@@ -85,9 +85,9 @@
                 <tr>
                     <td style="padding: 14px 6px 0 6px;">
                         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; font-size:12px; color:#9ca3af; line-height:1.6; text-align:center;">
-                            © {{ "now"|date("Y") }} {{ app_name|default('Your App') }}.
+                            © {{ "now"|date("Y") }} {{ app_name|default('МФЦ ВГТУ') }}.
                             {% if support_email is defined and support_email %}
-                                Need help? Contact <a href="mailto:{{ support_email }}" style="color:#6b7280; text-decoration:underline;">{{ support_email }}</a>.
+                                Нужна помощь? Напишите сюда: <a href="mailto:{{ support_email }}" style="color:#6b7280; text-decoration:underline;">{{ support_email }}</a>.
                             {% endif %}
                         </div>
                     </td>

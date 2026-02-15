@@ -22,7 +22,7 @@ final class EmailSender
         $email = (new TemplatedEmail())
             ->from(new Address($this->fromEmail, $this->fromName))
             ->to($toEmail)
-            ->subject('Your login code')
+            ->subject('Ваш одноразовый код')
             ->htmlTemplate('emails/otp_login.html.twig')
             ->context([
                 'otp' => $otp,
