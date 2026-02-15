@@ -19,9 +19,24 @@ class MfcStep2Type extends AbstractType
             'required' => false,
             'constraints' => [
                 new Assert\Count(max: 3, maxMessage: 'Превышено максимальное количество файлов: {{ limit }}'),
+                new Assert\All([
+                    'constraints' => [
+                        new Assert\File(
+                            maxSize: '20M',
+                            mimeTypes: [
+                                'application/pdf',
+                                'image/jpeg',
+                                'application/msword', // DOC
+                                'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // DOCX
+                            ],
+                            mimeTypesMessage: 'Разрешены только PDF, JPEG, DOC, DOCX.'
+                        ),
+                    ],
+                ]),
             ],
             'attr' => [
-                'class' => 'file-input'
+                'class' => 'file-input',
+                'accept' => '.pdf,.jpeg,.jpg,.doc,.docx', // подсказка браузеру (не защита)
             ]
         ])->add('submit', SubmitType::class, [
             'label' => 'Отправить',
