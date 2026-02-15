@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\MfcRequest;
+use App\Entity\User;
 use App\Form\MfcStep1Type;
 use App\Form\MfcStep2Type;
+use App\Repository\MfcRequestRepository;
 use App\Service\MfcFileStorage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -144,8 +146,6 @@ class MfcController extends AbstractController
         MfcFileStorage $storage,
         #[Autowire(service: 'state_machine.mfc_request')] WorkflowInterface $sm
     ): Response {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-
         if ($req->getOwner() !== $this->getUser()) {
             throw $this->createNotFoundException();
         }
@@ -167,9 +167,17 @@ class MfcController extends AbstractController
         return $this->redirectToRoute('mfc_step1', ['id' => $req->getId()]);
     }
 
-    #[Route('/status', name: 'mfc_status')]
-    public function mfcStatus(): Response
+    #[Route('/requests', name: 'mfc_requests')]
+    public function mfcStatus(
+        MfcRequestRepository $mfcRequestRepository,
+    ): Response
     {
-        return $this->render('mfc/status.html.twig');
+        /** @var User $user */
+        $user = $this->getUser();
+        $requests = $mfcRequestRepository->findRequestsByUser($user);
+
+        return $this->render('mfc/requests.html.twig', [
+            'requests' => $requests,
+        ]);
     }
 }

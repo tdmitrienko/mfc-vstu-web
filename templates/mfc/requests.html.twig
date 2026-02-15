@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <section class="hero hero-center">
+
+        <div class="status-container">
+
+            <table class="status-table">
+                <thead>
+                <tr>
+                    <th>ЗАЯВКА</th>
+                    <th>ДАТА ПОДАЧИ</th>
+                    <th>СОСТОЯНИЕ</th>
+                    <th class="text-center">ДЕЙСТВИЯ</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for request in requests %}
+                    {% if request.state is same as request.STATE_DONE %}
+                        <tr>
+                            <td class="text-truncate" style="max-width: 600px">
+                                Заявка №{{ request.id }} &mdash; "{{ request.applicationType.name }}"
+                            </td>
+                            <td>{{ request.updatedAt|date('d.m.Y h:i', 'Europe/Moscow') }}</td>
+                            <td>Подано</td>
+                            <td><span class="d-flex justify-content-center">&mdash;</span></td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td>
+                                Заявка №{{ request.id }}
+                                {% if request.state is same as request.STATE_STEP2 %}
+                                    &mdash; "{{ request.applicationType.name }}"
+                                {% endif %}
+                            </td>
+                            <td>&mdash;</td>
+                            <td>Черновик</td>
+                            <td>
+                                <div class="d-flex gap-3 justify-content-center">
+                                    <a href="{{ path('mfc_next', {'id': request.id}) }}" class="text-decoration-none text-reset" title="Продолжить">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </a>
+                                    <a href="{{ path('mfc_next', {'id': request.id}) }}" class="text-decoration-none text-danger" title="Удалить">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% else %}
+                    <tr>
+                        <td colspan="100" class="text-center">
+                            Вы еще не подали ни одной заявки ):
+                            <div>
+                                <a href="{{ path('mfc') }}" class="text-reset text-decoration-underline">Подать заявку</a>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="status-actions">
+                <a href="{{ path('dashboard') }}" class="btn-outline">
+                    На главную страницу
+                </a>
+            </div>
+
+        </div>
+
+    </section>
+{% endblock %}
