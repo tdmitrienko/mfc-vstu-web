@@ -2,10 +2,10 @@
 
 namespace App\Entity;
 
-use App\Repository\MfcRequestRepository;
+use App\Repository\MfcRequestFileRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: MfcRequestRepository::class)]
+#[ORM\Entity(repositoryClass: MfcRequestFileRepository::class)]
 class MfcRequestFile
 {
     #[ORM\Id]

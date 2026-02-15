@@ -19,7 +19,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Workflow\WorkflowInterface;
 
-#[IsGranted("ROLE_USER")]
+#[IsGranted('ROLE_USER')]
 #[Route('/mfc')]
 class MfcController extends AbstractController
 {

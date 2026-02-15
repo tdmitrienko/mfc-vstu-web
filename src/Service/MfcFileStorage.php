@@ -10,7 +10,7 @@ use Symfony\Component\String\ByteString;
 final class MfcFileStorage
 {
     public function __construct(
-        private string $uploadDir,
+        private readonly string $uploadDir,
     ) {}
 
     public function storeUploadedFile(MfcRequest $req, UploadedFile $file): MfcRequestFile
@@ -40,7 +40,7 @@ final class MfcFileStorage
 
     public function deletePhysicalFile(MfcRequestFile $file): void
     {
-        $fullPath = rtrim($this->uploadDir, '/').'/'.$file->getPath();
+        $fullPath = $this->getFullPath($file->getPath());
         if (is_file($fullPath)) {
             @unlink($fullPath);
         }
@@ -48,9 +48,21 @@ final class MfcFileStorage
 
     public function deletePhysicalFileByRelativePath(string $relativePath): void
     {
-        $fullPath = rtrim($this->uploadDir, '/').'/'.$relativePath;
+        $fullPath = $this->getFullPath($relativePath);
         if (is_file($fullPath)) {
             @unlink($fullPath);
         }
+    }
+
+    public function getSplFileInfo(MfcRequestFile $file): ?\SplFileInfo
+    {
+        $fullPath = $this->getFullPath($file->getPath());
+
+        return is_file($fullPath) ? new \SplFileInfo($fullPath) : null;
+    }
+
+    private function getFullPath(string $relativePath): string
+    {
+        return rtrim($this->uploadDir, '/').'/'.$relativePath;
     }
 }
