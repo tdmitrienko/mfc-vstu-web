@@ -28,4 +28,24 @@ class MfcRequestRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
+
+    public function findTemplateRequestByIdAndUser(int $id, User $user): MfcRequest|null
+    {
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.owner = :user')
+            ->setParameter('user', $user)
+            ->andWhere('m.id = :id')
+            ->setParameter('id', $id)
+            ->andWhere('m.state <> :state')
+            ->setParameter('state', MfcRequest::STATE_DONE)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+
+    public function removeRequest(MfcRequest $mfcRequest): void
+    {
+        $this->getEntityManager()->remove($mfcRequest);
+        $this->getEntityManager()->flush();
+    }
 }

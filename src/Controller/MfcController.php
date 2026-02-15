@@ -9,6 +9,7 @@ use App\Form\MfcStep2Type;
 use App\Repository\MfcRequestRepository;
 use App\Service\MfcFileStorage;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -168,7 +169,7 @@ class MfcController extends AbstractController
     }
 
     #[Route('/requests', name: 'mfc_requests')]
-    public function mfcStatus(
+    public function requests(
         MfcRequestRepository $mfcRequestRepository,
     ): Response
     {
@@ -179,5 +180,43 @@ class MfcController extends AbstractController
         return $this->render('mfc/requests.html.twig', [
             'requests' => $requests,
         ]);
+    }
+
+    #[Route('/request/{id}/remove-template', name: 'mfc_request_remove_template')]
+    public function removeTemplateRequest(
+        MfcRequestRepository $mfcRequestRepository,
+        MfcFileStorage $storage,
+        LoggerInterface $logger,
+        int $id,
+    ): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $request = $mfcRequestRepository->findTemplateRequestByIdAndUser($id, $user);
+        if ($request === null) {
+            throw $this->createNotFoundException('Request not found');
+        }
+
+        // we have to save relative paths now because Files are deleting from db before physical deleting
+        $relativePaths = [];
+        foreach ($request->getFiles() as $file) {
+            $relativePaths[] = $file->getPath();
+        }
+
+        $mfcRequestRepository->removeRequest($request);
+
+        foreach ($relativePaths as $relativePath) {
+            try {
+                $storage->deletePhysicalFileByRelativePath($relativePath);
+            } catch (\Exception $e) {
+                $logger->error('error-while-deleting-file-in-mfc-controller-remove-template-request-action', [
+                    'exception' => $e,
+                    'relativePath' => $relativePath,
+                ]);
+            }
+        }
+
+        return $this->redirectToRoute('mfc_requests');
     }
 }

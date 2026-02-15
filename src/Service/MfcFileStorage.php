@@ -45,4 +45,12 @@ final class MfcFileStorage
             @unlink($fullPath);
         }
     }
+
+    public function deletePhysicalFileByRelativePath(string $relativePath): void
+    {
+        $fullPath = rtrim($this->uploadDir, '/').'/'.$relativePath;
+        if (is_file($fullPath)) {
+            @unlink($fullPath);
+        }
+    }
 }

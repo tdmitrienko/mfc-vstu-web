@@ -40,7 +40,9 @@
                                     <a href="{{ path('mfc_next', {'id': request.id}) }}" class="text-decoration-none text-reset" title="Продолжить">
                                         <i class="bi bi-pencil-fill"></i>
                                     </a>
-                                    <a href="{{ path('mfc_next', {'id': request.id}) }}" class="text-decoration-none text-danger" title="Удалить">
+                                    <a href="{{ path('mfc_request_remove_template', {'id': request.id}) }}"
+                                       class="text-decoration-none text-danger" title="Удалить"
+                                       onclick="if (!confirm('Вы уверены, что хотите удалить черновик?')) event.preventDefault();">
                                         <i class="bi bi-trash-fill"></i>
                                     </a>
                                 </div>
