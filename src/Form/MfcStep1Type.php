@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class MfcStep1Type extends AbstractType
 {
@@ -33,9 +34,14 @@ class MfcStep1Type extends AbstractType
                 'required' => true,
                 'label' => false,
                 'attr' => [
+                    'maxlength' => 32,
                     'placeholder' => $placeholder,
-                    'class' => 'form-input'
+                    'class' => 'form-input',
                 ],
+                'constraints' => [
+                    new Assert\Length(max: 32, maxMessage: 'Максимальная длина поля: {{ limit }}'),
+                    new Assert\NotBlank(message: 'Поле не должно быть пустым'),
+                ]
             ])
             ->add('applicationType', EntityType::class, [
                 'class' => ApplicationType::class,
