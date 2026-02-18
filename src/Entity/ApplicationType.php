@@ -23,6 +23,12 @@ class ApplicationType
     #[ORM\Column(type: Types::JSON)]
     private array $roles = [];
 
+    #[ORM\Column]
+    private bool $documentRequired = true;
+
+    #[ORM\Column]
+    private bool $filesRequired = true;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -60,6 +66,30 @@ class ApplicationType
     public function setRoles(array $roles): static
     {
         $this->roles = $roles;
+
+        return $this;
+    }
+
+    public function isDocumentRequired(): bool
+    {
+        return $this->documentRequired;
+    }
+
+    public function setDocumentRequired(bool $documentRequired): static
+    {
+        $this->documentRequired = $documentRequired;
+
+        return $this;
+    }
+
+    public function isFilesRequired(): bool
+    {
+        return $this->filesRequired;
+    }
+
+    public function setFilesRequired(bool $filesRequired): static
+    {
+        $this->filesRequired = $filesRequired;
 
         return $this;
     }

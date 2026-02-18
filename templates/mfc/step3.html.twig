@@ -5,9 +5,13 @@
         <div class="form-box form-wide">
             {{ form_start(form) }}
             {{ form_errors(form) }}
-
-            {{ form_widget(form.documentNumber) }}
-            {{ form_errors(form.documentNumber) }}
+            <div class="upload-wrapper">
+                <label class="upload-box">
+                    {{ form_widget(form.files) }}
+                    <i class="bi bi-paperclip"></i>
+                </label>
+            </div>
+            {{ form_errors(form.files) }}
 
             <div class="form-actions">
                 <button type="button" class="btn-outline" onclick="mfcBack()">
@@ -15,7 +19,6 @@
                 </button>
                 {{ form_widget(form.submit) }}
             </div>
-
             {{ form_end(form) }}
         </div>
     </section>

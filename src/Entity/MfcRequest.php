@@ -12,6 +12,7 @@ class MfcRequest
 {
     public const STATE_STEP1 = 'step1';
     public const STATE_STEP2 = 'step2';
+    public const STATE_STEP3 = 'step3';
     public const STATE_DONE  = 'done';
 
     #[ORM\Id]

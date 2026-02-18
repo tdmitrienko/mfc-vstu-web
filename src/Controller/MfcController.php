@@ -6,6 +6,7 @@ use App\Entity\MfcRequest;
 use App\Entity\User;
 use App\Form\MfcStep1Type;
 use App\Form\MfcStep2Type;
+use App\Form\MfcStep3Type;
 use App\Repository\MfcRequestRepository;
 use App\Service\MfcFileStorage;
 use Doctrine\ORM\EntityManagerInterface;
@@ -41,12 +42,10 @@ class MfcController extends AbstractController
         Request $request,
         EntityManagerInterface $em,
     ): Response {
-        if ($req->getOwner() !== $this->getUser()) {
-            throw $this->createNotFoundException();
-        }
+        $this->assertOwner($req);
 
         if ($req->getState() !== MfcRequest::STATE_STEP1) {
-            return $this->redirectToRoute('mfc_step2', ['id' => $req->getId()]);
+            return $this->redirectToCurrentStep($req);
         }
 
         $form = $this->createForm(MfcStep1Type::class, $req, ['user' => $this->getUser()]);
@@ -71,22 +70,37 @@ class MfcController extends AbstractController
         EntityManagerInterface $em,
         #[Autowire(service: 'state_machine.mfc_request')] WorkflowInterface $sm
     ): Response {
-        if ($req->getOwner() !== $this->getUser()) {
-            throw $this->createNotFoundException();
-        }
+        $this->assertOwner($req);
 
-        // требуем, чтобы тип справки уже был выбран
-        if (!$req->getApplicationType() || !$req->getDocumentNumber()) {
+        $appType = $req->getApplicationType();
+        if ($appType === null) {
             return $this->redirectToRoute('mfc_step1', ['id' => $req->getId()]);
         }
 
-        if ($sm->can($req, 'to_step2')) {
-            $sm->apply($req, 'to_step2');
-            $req->touch();
-            $em->flush();
+        $state = $req->getState();
+
+        // step1 → step2 (если нужен документ)
+        if ($state === MfcRequest::STATE_STEP1 && $appType->isDocumentRequired()) {
+            return $this->applyAndRedirect($req, $em, $sm, 'to_step2', 'mfc_step2');
         }
 
-        return $this->redirectToRoute('mfc_step2', ['id' => $req->getId()]);
+        // step2 → проверяем что документ заполнен
+        if ($state === MfcRequest::STATE_STEP2 && !$req->getDocumentNumber()) {
+            return $this->redirectToRoute('mfc_step2', ['id' => $req->getId()]);
+        }
+
+        // step1/step2 → step3 (если нужны файлы)
+        if (in_array($state, [MfcRequest::STATE_STEP1, MfcRequest::STATE_STEP2], true) && $appType->isFilesRequired()) {
+            return $this->applyAndRedirect($req, $em, $sm, 'to_step3', 'mfc_step3');
+        }
+
+        // step1/step2 → finish (ничего больше не нужно)
+        if (in_array($state, [MfcRequest::STATE_STEP1, MfcRequest::STATE_STEP2], true)) {
+            $this->applyTransition($req, $em, $sm, 'finish');
+            return $this->render('mfc/success.html.twig');
+        }
+
+        return $this->redirectToCurrentStep($req);
     }
 
     #[Route('/workflow/{id}/step-2', name: 'mfc_step2', methods: ['GET', 'POST'])]
@@ -94,18 +108,44 @@ class MfcController extends AbstractController
         MfcRequest $req,
         Request $request,
         EntityManagerInterface $em,
+    ): Response {
+        $this->assertOwner($req);
+
+        if ($req->getState() !== MfcRequest::STATE_STEP2) {
+            return $this->redirectToCurrentStep($req);
+        }
+
+        $form = $this->createForm(MfcStep2Type::class, $req, ['user' => $this->getUser()]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $req->touch();
+            $em->flush();
+
+            return $this->redirectToRoute('mfc_next', ['id' => $req->getId()]);
+        }
+
+        return $this->render('mfc/step2.html.twig', [
+            'req' => $req,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/workflow/{id}/step-3', name: 'mfc_step3', methods: ['GET', 'POST'])]
+    public function step3(
+        MfcRequest $req,
+        Request $request,
+        EntityManagerInterface $em,
         MfcFileStorage $storage,
         #[Autowire(service: 'state_machine.mfc_request')] WorkflowInterface $sm
     ): Response {
-        if ($req->getOwner() !== $this->getUser()) {
-            throw $this->createNotFoundException();
+        $this->assertOwner($req);
+
+        if ($req->getState() !== MfcRequest::STATE_STEP3) {
+            return $this->redirectToCurrentStep($req);
         }
 
-        if ($req->getState() !== MfcRequest::STATE_STEP2) {
-            return $this->redirectToRoute('mfc_step1', ['id' => $req->getId()]);
-        }
-
-        $form = $this->createForm(MfcStep2Type::class);
+        $form = $this->createForm(MfcStep3Type::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -119,22 +159,16 @@ class MfcController extends AbstractController
                     $em->commit();
                 } catch (\Exception $e) {
                     $em->rollback();
-
                     throw $e;
                 }
             }
 
-            if ($sm->can($req, 'finish')) {
-                $sm->apply($req, 'finish');
-            }
-
-            $req->touch();
-            $em->flush();
+            $this->applyTransition($req, $em, $sm, 'finish');
 
             return $this->render('mfc/success.html.twig');
         }
 
-        return $this->render('mfc/step2.html.twig', [
+        return $this->render('mfc/step3.html.twig', [
             'req' => $req,
             'form' => $form->createView(),
         ]);
@@ -147,22 +181,28 @@ class MfcController extends AbstractController
         MfcFileStorage $storage,
         #[Autowire(service: 'state_machine.mfc_request')] WorkflowInterface $sm
     ): Response {
-        if ($req->getOwner() !== $this->getUser()) {
-            throw $this->createNotFoundException();
-        }
+        $this->assertOwner($req);
 
-        // очищаем файлы только если позволено
-        if ($sm->can($req, 'back_to_step1')) {
-            // удалить физически + в бд
+        $state = $req->getState();
+        $appType = $req->getApplicationType();
+
+        if ($state === MfcRequest::STATE_STEP3) {
             foreach ($req->getFiles() as $file) {
                 $storage->deletePhysicalFile($file);
                 $req->removeFile($file);
                 $em->remove($file);
             }
 
-            $sm->apply($req, 'back_to_step1');
-            $req->touch();
-            $em->flush();
+            if ($appType?->isDocumentRequired() && $sm->can($req, 'back_to_step2')) {
+                return $this->applyAndRedirect($req, $em, $sm, 'back_to_step2', 'mfc_step2');
+            }
+
+            return $this->applyAndRedirect($req, $em, $sm, 'back_to_step1', 'mfc_step1');
+        }
+
+        if ($state === MfcRequest::STATE_STEP2) {
+            $req->setDocumentNumber(null);
+            return $this->applyAndRedirect($req, $em, $sm, 'back_to_step1', 'mfc_step1');
         }
 
         return $this->redirectToRoute('mfc_step1', ['id' => $req->getId()]);
@@ -198,7 +238,6 @@ class MfcController extends AbstractController
             throw $this->createNotFoundException('Request not found');
         }
 
-        // we have to save relative paths now because Files are deleting from db before physical deleting
         $relativePaths = [];
         foreach ($request->getFiles() as $file) {
             $relativePaths[] = $file->getPath();
@@ -218,5 +257,43 @@ class MfcController extends AbstractController
         }
 
         return $this->redirectToRoute('mfc_requests');
+    }
+
+    private function assertOwner(MfcRequest $req): void
+    {
+        if ($req->getOwner() !== $this->getUser()) {
+            throw $this->createNotFoundException();
+        }
+    }
+
+    private function applyTransition(
+        MfcRequest $req,
+        EntityManagerInterface $em,
+        WorkflowInterface $sm,
+        string $transition,
+    ): void {
+        $sm->apply($req, $transition);
+        $req->touch();
+        $em->flush();
+    }
+
+    private function applyAndRedirect(
+        MfcRequest $req,
+        EntityManagerInterface $em,
+        WorkflowInterface $sm,
+        string $transition,
+        string $route,
+    ): Response {
+        $this->applyTransition($req, $em, $sm, $transition);
+        return $this->redirectToRoute($route, ['id' => $req->getId()]);
+    }
+
+    private function redirectToCurrentStep(MfcRequest $req): Response
+    {
+        return match ($req->getState()) {
+            MfcRequest::STATE_STEP2 => $this->redirectToRoute('mfc_step2', ['id' => $req->getId()]),
+            MfcRequest::STATE_STEP3 => $this->redirectToRoute('mfc_step3', ['id' => $req->getId()]),
+            default => $this->redirectToRoute('mfc_step1', ['id' => $req->getId()]),
+        };
     }
 }
