@@ -7,7 +7,7 @@ use App\Exception\MfcApiException;
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Client\ClientInterface;
 
-class MfcApiClient
+class MfcApiClient implements MfcApiClientInterface
 {
     public function __construct(
         private readonly ClientInterface $httpClient,

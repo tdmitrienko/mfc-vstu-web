@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
 class UserService
 {
@@ -13,6 +14,7 @@ class UserService
     {
     }
 
+    /** @throws UniqueConstraintViolationException */
     public function createOrUpdateUserForAuth(string $email, string $mfcCode, array $roles, array $documents): ?User
     {
         $user = $this->userRepository->findByEmail($email);

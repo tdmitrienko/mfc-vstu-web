@@ -57,6 +57,8 @@ services:
             $username: '%env(MFC_API_USERNAME)%'
             $password: '%env(MFC_API_PASSWORD)%'
 
+    App\Service\MfcApiClientInterface: '@App\Service\MfcApiClient'
+
     App\Service\MfcFileStorage:
         arguments:
             $uploadDir: '%mfc_upload_dir%'
@@ -64,7 +66,13 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
+when@dev:
+    services:
+        App\Service\MfcApiClientInterface: '@App\Service\MfcApiClientStub'
+
 when@test:
     services:
         _defaults:
             public: true  # Make services public in test env
+
+        App\Service\MfcApiClientInterface: '@App\Service\MfcApiClientStub'

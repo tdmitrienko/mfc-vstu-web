@@ -6,7 +6,7 @@ use App\DTO\ApplicantStatusEnum;
 use App\Exception\MfcApiException;
 use App\Form\OtpType;
 use App\Service\Cache\EmailOtpStorageService;
-use App\Service\MfcApiClient;
+use App\Service\MfcApiClientInterface;
 use App\Service\UserService;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Psr\Log\LoggerInterface;
@@ -35,7 +35,7 @@ class OtpAuthenticator extends AbstractLoginFormAuthenticator
         private EmailOtpStorageService $emailOtpStorageService,
         private FormFactoryInterface $formFactory,
         private UserService $userService,
-        private MfcApiClient $mfcApiClient,
+        private MfcApiClientInterface $mfcApiClient,
         private LoggerInterface $logger,
     )
     {
@@ -110,13 +110,13 @@ class OtpAuthenticator extends AbstractLoginFormAuthenticator
             throw new CustomUserMessageAuthenticationException('Что-то пошло не так, попробуйте войти позднее.');
         }
 
-        $roles = array_unique(array_filter($roles));
+        $roles = array_values(array_unique(array_filter($roles)));
         if ([] === $roles) {
             $this->logger->error('user without roles came from api', ['email' => $email]);
             throw new CustomUserMessageAuthenticationException('Что-то пошло не так, попробуйте войти позднее.');
         }
 
-        $documents = array_unique(array_filter($documents));
+        $documents = array_values(array_unique(array_filter($documents)));
 
         try {
             $this->userService->createOrUpdateUserForAuth($email, $userCode, $roles, $documents);
