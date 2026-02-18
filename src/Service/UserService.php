@@ -13,16 +13,26 @@ class UserService
     {
     }
 
-    public function findOrCreateUser(string $email): ?object
+    public function createOrUpdateUserForAuth(string $email, string $mfcCode, array $roles, array $documents): ?User
     {
         $user = $this->userRepository->findByEmail($email);
         if ($user !== null) {
+            $user->setMfcCode($mfcCode)
+                ->setRoles($roles)
+                ->setDocuments($documents)
+            ;
+
+            $this->userRepository->save($user);
+
             return $user;
         }
 
         $user = (new User())
             ->setEmail($email)
-            ->setRoles(['ROLE_STUDENT']);
+            ->setMfcCode($mfcCode)
+            ->setRoles($roles)
+            ->setDocuments($documents)
+        ;
 
         $this->userRepository->save($user);
 

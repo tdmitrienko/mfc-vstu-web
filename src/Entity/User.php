@@ -33,6 +33,12 @@ class User implements UserInterface
     #[ORM\OneToMany(targetEntity: MfcRequest::class, mappedBy: 'owner', orphanRemoval: true)]
     private Collection $mfcRequests;
 
+    #[ORM\Column(length: 32, unique: true)]
+    private ?string $mfcCode = null;
+
+    #[ORM\Column]
+    private array $documents = [];
+
     public function __construct()
     {
         $this->mfcRequests = new ArrayCollection();
@@ -123,6 +129,30 @@ class User implements UserInterface
                 $mfcRequest->setOwner(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getMfcCode(): ?string
+    {
+        return $this->mfcCode;
+    }
+
+    public function setMfcCode(string $mfcCode): static
+    {
+        $this->mfcCode = $mfcCode;
+
+        return $this;
+    }
+
+    public function getDocuments(): array
+    {
+        return $this->documents;
+    }
+
+    public function setDocuments(array $documents): static
+    {
+        $this->documents = $documents;
 
         return $this;
     }

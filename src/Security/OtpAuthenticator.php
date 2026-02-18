@@ -2,9 +2,14 @@
 
 namespace App\Security;
 
+use App\DTO\ApplicantStatusEnum;
+use App\Exception\MfcApiException;
 use App\Form\OtpType;
 use App\Service\Cache\EmailOtpStorageService;
+use App\Service\MfcApiClient;
 use App\Service\UserService;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,6 +35,8 @@ class OtpAuthenticator extends AbstractLoginFormAuthenticator
         private EmailOtpStorageService $emailOtpStorageService,
         private FormFactoryInterface $formFactory,
         private UserService $userService,
+        private MfcApiClient $mfcApiClient,
+        private LoggerInterface $logger,
     )
     {
     }
@@ -66,7 +73,57 @@ class OtpAuthenticator extends AbstractLoginFormAuthenticator
             throw new CustomUserMessageAuthenticationException('Введен неверный OTP-код.');
         }
 
-        $this->userService->findOrCreateUser($email);
+        try {
+            $applicantStatuses = $this->mfcApiClient->getApplicantStatuses($email);
+        } catch (MfcApiException $e) {
+            throw new CustomUserMessageAuthenticationException($e->getMessage());
+        } catch (\Exception $e) {
+            $this->logger->error('mfc-api-client-error', ['email' => $email, 'exception' => $e]);
+
+            throw new CustomUserMessageAuthenticationException('Что-то пошло не так, попробуйте войти позднее.');
+        }
+
+        $roles = [];
+        $documents = [];
+        $userCode = null;
+        foreach ($applicantStatuses as $applicantStatus) {
+            $roles[] = match ($applicantStatus->status) {
+                ApplicantStatusEnum::Student => 'ROLE_STUDENT',
+                ApplicantStatusEnum::Employee => 'ROLE_EMPLOYEE',
+                default => function () use ($email, $applicantStatus): void {
+                    $this->logger->error('user with unknown status came from api', ['email' => $email, 'status' => $applicantStatus->status->name]);
+                    throw new CustomUserMessageAuthenticationException('Что-то пошло не так, попробуйте войти позднее.');
+                },
+            };
+
+            if ($applicantStatus->document) {
+                $documents[] = $applicantStatus->document;
+            }
+
+            if ($userCode === null) {
+                $userCode = $applicantStatus->userCode;
+            }
+        }
+
+        if ($userCode === null) {
+            $this->logger->error('user without user code came from api', ['email' => $email]);
+            throw new CustomUserMessageAuthenticationException('Что-то пошло не так, попробуйте войти позднее.');
+        }
+
+        $roles = array_unique(array_filter($roles));
+        if ([] === $roles) {
+            $this->logger->error('user without roles came from api', ['email' => $email]);
+            throw new CustomUserMessageAuthenticationException('Что-то пошло не так, попробуйте войти позднее.');
+        }
+
+        $documents = array_unique(array_filter($documents));
+
+        try {
+            $this->userService->createOrUpdateUserForAuth($email, $userCode, $roles, $documents);
+        } catch (UniqueConstraintViolationException $e) {
+            $this->logger->error('error while createOrUpdateUserForAuth', ['exception' => $e]);
+            throw new CustomUserMessageAuthenticationException('Что-то пошло не так, попробуйте войти позднее.');
+        }
 
         $request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $email);
 

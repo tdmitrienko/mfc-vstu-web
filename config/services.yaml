@@ -42,6 +42,21 @@ services:
             $supportEmail: '%env(MAIL_SUPPORT_EMAIL)%'
             $fromName: '%env(MAIL_FROM_NAME)%'
 
+    app.http_client.mfc_api:
+        class: GuzzleHttp\Client
+        arguments:
+            $config:
+                timeout: 50
+                connect_timeout: 50
+
+    App\Service\MfcApiClient:
+        arguments:
+            $httpClient: '@app.http_client.mfc_api'
+            $baseUrl: '%env(MFC_API_BASE_URL)%'
+            $apiKey: '%env(MFC_API_KEY)%'
+            $username: '%env(MFC_API_USERNAME)%'
+            $password: '%env(MFC_API_PASSWORD)%'
+
     App\Service\MfcFileStorage:
         arguments:
             $uploadDir: '%mfc_upload_dir%'
