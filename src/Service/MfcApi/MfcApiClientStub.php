@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Service;
+namespace App\Service\MfcApi;
 
 use App\DTO\ApplicantStatus;
 use App\DTO\ApplicantStatusEnum;

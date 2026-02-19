@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\MfcApi;
 
 use App\DTO\ApplicantStatus;
 use App\Exception\MfcApiException;

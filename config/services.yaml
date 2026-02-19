@@ -49,7 +49,7 @@ services:
                 timeout: 50
                 connect_timeout: 50
 
-    App\Service\MfcApiClient:
+    App\Service\MfcApi\MfcApiClient:
         arguments:
             $httpClient: '@app.http_client.mfc_api'
             $baseUrl: '%env(MFC_API_BASE_URL)%'
@@ -57,7 +57,7 @@ services:
             $username: '%env(MFC_API_USERNAME)%'
             $password: '%env(MFC_API_PASSWORD)%'
 
-    App\Service\MfcApiClientInterface: '@App\Service\MfcApiClient'
+    App\Service\MfcApi\MfcApiClientInterface: '@App\Service\MfcApi\MfcApiClient'
 
     App\Service\MfcFileStorage:
         arguments:
@@ -68,11 +68,11 @@ services:
 
 when@dev:
     services:
-        App\Service\MfcApiClientInterface: '@App\Service\MfcApiClientStub'
+        App\Service\MfcApi\MfcApiClientInterface: '@App\Service\MfcApi\MfcApiClientStub'
 
 when@test:
     services:
         _defaults:
             public: true  # Make services public in test env
 
-        App\Service\MfcApiClientInterface: '@App\Service\MfcApiClientStub'
+        App\Service\MfcApi\MfcApiClientInterface: '@App\Service\MfcApi\MfcApiClientStub'

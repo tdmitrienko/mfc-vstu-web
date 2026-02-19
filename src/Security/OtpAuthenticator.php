@@ -6,7 +6,7 @@ use App\DTO\ApplicantStatusEnum;
 use App\Exception\MfcApiException;
 use App\Form\OtpType;
 use App\Service\Cache\EmailOtpStorageService;
-use App\Service\MfcApiClientInterface;
+use App\Service\MfcApi\MfcApiClientInterface;
 use App\Service\UserService;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Psr\Log\LoggerInterface;
