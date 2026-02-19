@@ -1,0 +1,60 @@
+{#
+    Reusable pagination component.
+
+    Usage:
+        {% import 'components/pager.html.twig' as pager %}
+        {{ pager.render(currentPage, totalPages, 'route_name', {extra: 'param'}) }}
+
+    Parameters:
+        currentPage  – current page number (int)
+        totalPages   – total number of pages (int)
+        route        – route name used to build page links
+        routeParams  – (optional) extra route parameters merged with {page: N}
+#}
+
+{% macro render(currentPage, totalPages, route, routeParams) %}
+    {% set routeParams = routeParams|default({}) %}
+
+    {% if totalPages > 1 %}
+        {# collect visible pages: first 2, last 2, ±2 around current #}
+        {% set pages = [1] %}
+        {% for p in range(currentPage - 1, currentPage + 1) %}
+            {% if p >= 1 and p <= totalPages %}
+                {% set pages = pages|merge([p]) %}
+            {% endif %}
+        {% endfor %}
+        {% set pages = pages|merge([totalPages]) %}
+        {# sort & deduplicate #}
+        {% set sorted = pages|sort %}
+        {% set pages = [] %}
+        {% set last = null %}
+        {% for p in sorted %}
+            {% if p != last %}
+                {% set pages = pages|merge([p]) %}
+            {% endif %}
+            {% set last = p %}
+        {% endfor %}
+
+        <nav class="pager" aria-label="Пагинация">
+            <a class="pager-arrow{% if currentPage == 1 %} is-disabled{% endif %}"
+               href="{{ currentPage > 1 ? path(route, routeParams|merge({page: currentPage - 1})) : '#' }}">
+                <i class="bi bi-chevron-left"></i>
+            </a>
+
+            {% set prev = 0 %}
+            {% for p in pages %}
+                {% if p > prev + 1 %}
+                    <span class="pager-dots">&hellip;</span>
+                {% endif %}
+                <a class="pager-item{% if p == currentPage %} is-active{% endif %}"
+                   href="{{ path(route, routeParams|merge({page: p})) }}">{{ p }}</a>
+                {% set prev = p %}
+            {% endfor %}
+
+            <a class="pager-arrow{% if currentPage == totalPages %} is-disabled{% endif %}"
+               href="{{ currentPage < totalPages ? path(route, routeParams|merge({page: currentPage + 1})) : '#' }}">
+                <i class="bi bi-chevron-right"></i>
+            </a>
+        </nav>
+    {% endif %}
+{% endmacro %}

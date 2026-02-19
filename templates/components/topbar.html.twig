@@ -5,6 +5,9 @@
             <a href="#"><img src="{{ asset('build/images/tg.svg') }}" alt="Telegram"></a>
         </div>
         <div class="topbar-right">
+            <button class="theme-toggle" title="Переключить тему" aria-label="Переключить тему">
+                <i class="bi bi-moon-stars-fill theme-icon"></i>
+            </button>
             {% if app.user %}
                 <a href="{{ path('app_logout') }}" class="topbar-auth-link">
                     <i class="bi bi-box-arrow-right" aria-hidden="true"></i>

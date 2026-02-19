@@ -18,15 +18,28 @@ class MfcRequestRepository extends ServiceEntityRepository
     }
 
     /** @return MfcRequest[] */
-    public function findRequestsByUser(User $user): array
+    public function findRequestsByUser(User $user, int $limit = 0, int $offset = 0): array
     {
-        return $this->createQueryBuilder('m')
+        $qb = $this->createQueryBuilder('m')
             ->andWhere('m.owner = :user')
             ->setParameter('user', $user)
-            ->orderBy('m.id', 'DESC')
+            ->orderBy('m.id', 'DESC');
+
+        if ($limit > 0) {
+            $qb->setMaxResults($limit)->setFirstResult($offset);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function countByUser(User $user): int
+    {
+        return (int) $this->createQueryBuilder('m')
+            ->select('COUNT(m.id)')
+            ->andWhere('m.owner = :user')
+            ->setParameter('user', $user)
             ->getQuery()
-            ->getResult()
-        ;
+            ->getSingleScalarResult();
     }
 
     public function findTemplateRequestByIdAndUser(int $id, User $user): MfcRequest|null

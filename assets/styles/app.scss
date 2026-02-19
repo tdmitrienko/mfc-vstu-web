@@ -54,6 +54,36 @@ body {
     display: block;
 }
 
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.theme-toggle {
+    background: none;
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    line-height: 1;
+    transition: background 0.2s;
+
+    &:hover {
+        background: rgba(255,255,255,.14);
+    }
+
+    &:focus-visible {
+        outline: 2px solid rgba(255,255,255,.9);
+        outline-offset: 2px;
+    }
+}
+
 .topbar-right .topbar-auth-link{
     display: inline-flex;
     align-items: center;
@@ -172,7 +202,6 @@ main {
     flex: 1;
     display: flex;
     justify-content: center;
-    align-items: center;
 }
 
 /* =========================
@@ -521,12 +550,15 @@ main {
 .status-container {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 60px;
-    padding: 60px 0;
+    gap: 14px;
+    padding: 30px 0;
     width: 90%;
     max-width: 1400px;
     margin: 0 auto;
+}
+
+.status-container .status-actions {
+    margin-top: 20px;
 }
 
 .status-table {
@@ -556,4 +588,273 @@ main {
 .status-actions {
     display: flex;
     justify-content: center;
+}
+
+/* =========================
+   PAGINATION (.pager)
+========================= */
+
+.pager {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.pager-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: #5e79a8;
+    font-size: 16px;
+    -webkit-text-stroke: 1.5px currentColor;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+
+    &:hover {
+        background: rgba(94, 121, 168, 0.12);
+        color: #3d5f97;
+    }
+
+    &.is-disabled {
+        color: #c0c0c0;
+        pointer-events: none;
+    }
+}
+
+.pager-item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 6px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: #3d5f97;
+    font-weight: 600;
+    font-size: 13px;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+
+    &:hover {
+        background: rgba(94, 121, 168, 0.10);
+        color: #3d5f97;
+    }
+
+    &.is-active {
+        background: #5e79a8;
+        color: #ffffff;
+        box-shadow: 0 2px 8px rgba(94, 121, 168, 0.35);
+        pointer-events: none;
+    }
+}
+
+.pager-dots {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 34px;
+    color: #9ab;
+    font-size: 14px;
+    letter-spacing: 1px;
+    user-select: none;
+}
+
+/* =========================
+   DARK THEME
+========================= */
+
+[data-bs-theme="dark"] {
+    body {
+        background: #1a1a2e;
+        color: #e0e0e0;
+    }
+
+    /* TOPBAR */
+    .topbar {
+        background: #0f3460;
+    }
+
+    /* HEADER */
+    .header {
+        background: #16213e;
+        border-bottom-color: #2a4a7f;
+    }
+
+    .logo-text strong {
+        color: #7b96c4;
+    }
+
+    .logo-text span {
+        color: #9a9a9a;
+    }
+
+    /* HERO */
+    .hero {
+        background-image: url('../images/hero-bg-dark.png');
+    }
+
+    /* FORMS */
+    .form-box {
+        background: #16213e;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .form-input {
+        background: #1a1a2e;
+        border-color: #2a4a7f;
+        color: #e0e0e0;
+    }
+
+    .form-select {
+        background: #1a1a2e;
+        border-color: #2a4a7f;
+        color: #7b96c4;
+    }
+
+    .otp-input {
+        background: rgba(22, 33, 62, 0.85);
+        border-color: #2a4a7f;
+        color: #e0e0e0;
+
+        &:focus {
+            border-color: #7b96c4;
+        }
+    }
+
+    /* BUTTONS */
+    .btn-primary {
+        background: #2a4a7f;
+
+        &:hover {
+            background: #3d5f97;
+        }
+    }
+
+    .btn-outline {
+        background: #1a1a2e;
+        border-color: #2a4a7f;
+        color: #7b96c4;
+
+        &:hover {
+            background: #2a4a7f;
+            color: #ffffff;
+        }
+    }
+
+    /* SERVICES */
+    .services-title {
+        color: #7b96c4;
+    }
+
+    .service-item {
+        color: #7b96c4;
+    }
+
+    .service-icon::before {
+        background: #16213e;
+    }
+
+    .service-icon::after {
+        background: #2a4a7f;
+    }
+
+    .service-icon i {
+        color: #7b96c4;
+    }
+
+    /* STATUS TABLE */
+    .status-table {
+        background: rgba(22, 33, 62, 0.9);
+    }
+
+    .status-table th,
+    .status-table td {
+        border-color: #2a4a7f;
+        color: #7b96c4;
+    }
+
+    /* UPLOAD */
+    .upload-box {
+        border-color: #2a4a7f;
+
+        &:hover {
+            background: rgba(42, 74, 127, 0.15);
+        }
+
+        i {
+            color: #7b96c4;
+        }
+    }
+
+    /* SUCCESS */
+    .success-icon i {
+        color: #7b96c4;
+    }
+
+    .success-title {
+        color: #7b96c4;
+    }
+
+    .success-text {
+        color: #9a9a9a;
+    }
+
+    /* SEARCH */
+    .search-form {
+        border-color: #2a4a7f;
+    }
+
+    .search-form input {
+        background: #1a1a2e;
+        color: #e0e0e0;
+    }
+
+    /* PAGINATION */
+    .pager-arrow {
+        color: #7b96c4;
+
+        &:hover {
+            background: rgba(123, 150, 196, 0.12);
+            color: #a0b8e0;
+        }
+
+        &.is-disabled {
+            color: #3a3a5c;
+        }
+    }
+
+    .pager-item {
+        color: #7b96c4;
+
+        &:hover {
+            background: rgba(123, 150, 196, 0.10);
+        }
+
+        &.is-active {
+            background: #2a4a7f;
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(15, 52, 96, 0.5);
+        }
+    }
+
+    .pager-dots {
+        color: #4a5a7a;
+    }
+
+    /* ERRORS */
+    .auth-error {
+        color: #f08080;
+    }
+
+    .field-error {
+        color: #f08080;
+    }
 }

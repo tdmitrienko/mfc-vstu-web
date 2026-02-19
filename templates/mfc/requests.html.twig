@@ -1,9 +1,13 @@
 {% extends 'base.html.twig' %}
 
+{% import 'components/pager.html.twig' as pager %}
+
 {% block body %}
     <section class="hero hero-center">
 
         <div class="status-container">
+
+            {{ pager.render(currentPage, totalPages, 'mfc_requests') }}
 
             <table class="status-table">
                 <thead>

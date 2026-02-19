@@ -24,6 +24,8 @@ use Symfony\Component\Workflow\WorkflowInterface;
 #[Route('/mfc')]
 class MfcController extends AbstractController
 {
+    private const REQUESTS_PER_PAGE = 4;
+
     #[Route('/', name: 'mfc')]
     public function start(EntityManagerInterface $em): Response
     {
@@ -211,14 +213,24 @@ class MfcController extends AbstractController
     #[Route('/requests', name: 'mfc_requests')]
     public function requests(
         MfcRequestRepository $mfcRequestRepository,
+        Request $request,
     ): Response
     {
         /** @var User $user */
         $user = $this->getUser();
-        $requests = $mfcRequestRepository->findRequestsByUser($user);
+
+        $page = max(1, $request->query->getInt('page', 1));
+        $perPage = self::REQUESTS_PER_PAGE;
+        $total = $mfcRequestRepository->countByUser($user);
+        $totalPages = max(1, (int) ceil($total / $perPage));
+        $page = min($page, $totalPages);
+
+        $requests = $mfcRequestRepository->findRequestsByUser($user, $perPage, ($page - 1) * $perPage);
 
         return $this->render('mfc/requests.html.twig', [
             'requests' => $requests,
+            'currentPage' => $page,
+            'totalPages' => $totalPages,
         ]);
     }
 
