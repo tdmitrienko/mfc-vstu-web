@@ -31,12 +31,12 @@ class OtpAuthenticator extends AbstractLoginFormAuthenticator
     public const LOGIN_ROUTE = 'app_login_otp';
 
     public function __construct(
-        private UrlGeneratorInterface $urlGenerator,
-        private EmailOtpStorageService $emailOtpStorageService,
-        private FormFactoryInterface $formFactory,
-        private UserService $userService,
-        private MfcApiClientInterface $mfcApiClient,
-        private LoggerInterface $logger,
+        private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly EmailOtpStorageService $emailOtpStorageService,
+        private readonly FormFactoryInterface $formFactory,
+        private readonly UserService $userService,
+        private readonly MfcApiClientInterface $mfcApiClient,
+        private readonly LoggerInterface $logger,
     )
     {
     }
@@ -91,7 +91,7 @@ class OtpAuthenticator extends AbstractLoginFormAuthenticator
                 ApplicantStatusEnum::Student => 'ROLE_STUDENT',
                 ApplicantStatusEnum::Employee => 'ROLE_EMPLOYEE',
                 default => function () use ($email, $applicantStatus): void {
-                    $this->logger->error('user with unknown status came from api', ['email' => $email, 'status' => $applicantStatus->status->name]);
+                    $this->logger->error('user with unknown status provided from api', ['email' => $email, 'status' => $applicantStatus->status->name]);
                     throw new CustomUserMessageAuthenticationException('Что-то пошло не так, попробуйте войти позднее.');
                 },
             };
@@ -106,17 +106,21 @@ class OtpAuthenticator extends AbstractLoginFormAuthenticator
         }
 
         if ($userCode === null) {
-            $this->logger->error('user without user code came from api', ['email' => $email]);
+            $this->logger->error('user without user code provided from api', ['email' => $email]);
             throw new CustomUserMessageAuthenticationException('Что-то пошло не так, попробуйте войти позднее.');
         }
 
         $roles = array_values(array_unique(array_filter($roles)));
         if ([] === $roles) {
-            $this->logger->error('user without roles came from api', ['email' => $email]);
+            $this->logger->error('user without roles provided from api', ['email' => $email]);
             throw new CustomUserMessageAuthenticationException('Что-то пошло не так, попробуйте войти позднее.');
         }
 
         $documents = array_values(array_unique(array_filter($documents)));
+        if (in_array('ROLE_STUDENT', $roles, true) && [] === $documents) {
+            $this->logger->error('student without documents provided from api', ['email' => $email]);
+            throw new CustomUserMessageAuthenticationException('Что-то пошло не так, попробуйте войти позднее.');
+        }
 
         try {
             $this->userService->createOrUpdateUserForAuth($email, $userCode, $roles, $documents);
