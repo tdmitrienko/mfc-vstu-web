@@ -105,6 +105,9 @@ logs: ##
 down: ##
 	${DOCKER_COMPOSE} down -v --remove-orphans $(ARGS:=)
 
+down-hard: ## Stops all containers (even out of compose file)
+	@docker ps -q | xargs -r docker stop
+
 rebuild: down build up composer-clear-cache composer-dump-env-dev ##
 
 
