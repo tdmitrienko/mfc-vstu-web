@@ -51,7 +51,7 @@
                         </td>
                         <td>
                             {% if request.state is same as request.STATE_DONE %}
-                                Подано
+                                {{ request.mfcCode ? 'Подано.' : 'Ошибка' }}
                             {% else %}
                                 Черновик
                             {% endif %}

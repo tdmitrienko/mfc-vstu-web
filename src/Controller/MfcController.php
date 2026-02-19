@@ -8,6 +8,7 @@ use App\Form\MfcStep1Type;
 use App\Form\MfcStep2Type;
 use App\Form\MfcStep3Type;
 use App\Repository\MfcRequestRepository;
+use App\Service\MfcApi\MfcApiClientInterface;
 use App\Service\MfcFileStorage;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -66,45 +67,6 @@ class MfcController extends AbstractController
         ]);
     }
 
-    #[Route('/workflow/{id}/next', name: 'mfc_next', methods: ['POST', 'GET'])]
-    public function next(
-        MfcRequest $req,
-        EntityManagerInterface $em,
-        #[Autowire(service: 'state_machine.mfc_request')] WorkflowInterface $sm
-    ): Response {
-        $this->assertOwner($req);
-
-        $appType = $req->getApplicationType();
-        if ($appType === null) {
-            return $this->redirectToRoute('mfc_step1', ['id' => $req->getId()]);
-        }
-
-        $state = $req->getState();
-
-        // step1 → step2 (если нужен документ)
-        if ($state === MfcRequest::STATE_STEP1 && $appType->isDocumentRequired()) {
-            return $this->applyAndRedirect($req, $em, $sm, 'to_step2', 'mfc_step2');
-        }
-
-        // step2 → проверяем что документ заполнен
-        if ($state === MfcRequest::STATE_STEP2 && !$req->getDocumentNumber()) {
-            return $this->redirectToRoute('mfc_step2', ['id' => $req->getId()]);
-        }
-
-        // step1/step2 → step3 (если нужны файлы)
-        if (in_array($state, [MfcRequest::STATE_STEP1, MfcRequest::STATE_STEP2], true) && $appType->isFilesRequired()) {
-            return $this->applyAndRedirect($req, $em, $sm, 'to_step3', 'mfc_step3');
-        }
-
-        // step1/step2 → finish (ничего больше не нужно)
-        if (in_array($state, [MfcRequest::STATE_STEP1, MfcRequest::STATE_STEP2], true)) {
-            $this->applyTransition($req, $em, $sm, 'finish');
-            return $this->render('mfc/success.html.twig');
-        }
-
-        return $this->redirectToCurrentStep($req);
-    }
-
     #[Route('/workflow/{id}/step-2', name: 'mfc_step2', methods: ['GET', 'POST'])]
     public function step2(
         MfcRequest $req,
@@ -139,7 +101,8 @@ class MfcController extends AbstractController
         Request $request,
         EntityManagerInterface $em,
         MfcFileStorage $storage,
-        #[Autowire(service: 'state_machine.mfc_request')] WorkflowInterface $sm
+        MfcApiClientInterface $mfcApiClient,
+        #[Autowire(service: 'state_machine.mfc_request')] WorkflowInterface $sm,
     ): Response {
         $this->assertOwner($req);
 
@@ -165,6 +128,9 @@ class MfcController extends AbstractController
                 }
             }
 
+            $registeredRequest = $mfcApiClient->registerRequestByApplicant($req);
+            $req->setMfcCode($registeredRequest->requestId);
+
             $this->applyTransition($req, $em, $sm, 'finish');
 
             return $this->render('mfc/success.html.twig');
@@ -174,6 +140,50 @@ class MfcController extends AbstractController
             'req' => $req,
             'form' => $form->createView(),
         ]);
+    }
+
+    #[Route('/workflow/{id}/next', name: 'mfc_next', methods: ['POST', 'GET'])]
+    public function next(
+        MfcRequest $req,
+        EntityManagerInterface $em,
+        #[Autowire(service: 'state_machine.mfc_request')] WorkflowInterface $sm,
+        MfcApiClientInterface $mfcApiClient,
+    ): Response {
+        $this->assertOwner($req);
+
+        $appType = $req->getApplicationType();
+        if ($appType === null) {
+            return $this->redirectToRoute('mfc_step1', ['id' => $req->getId()]);
+        }
+
+        $state = $req->getState();
+
+        // step1 → step2 (если нужен документ)
+        if ($state === MfcRequest::STATE_STEP1 && $appType->isDocumentRequired()) {
+            return $this->applyAndRedirect($req, $em, $sm, 'to_step2', 'mfc_step2');
+        }
+
+        // step2 → проверяем что документ заполнен
+        if ($state === MfcRequest::STATE_STEP2 && !$req->getDocumentNumber()) {
+            return $this->redirectToRoute('mfc_step2', ['id' => $req->getId()]);
+        }
+
+        // step1/step2 → step3 (если нужны файлы)
+        if (in_array($state, [MfcRequest::STATE_STEP1, MfcRequest::STATE_STEP2], true) && $appType->isFilesRequired()) {
+            return $this->applyAndRedirect($req, $em, $sm, 'to_step3', 'mfc_step3');
+        }
+
+        // step1/step2 → finish (ничего больше не нужно)
+        if (in_array($state, [MfcRequest::STATE_STEP1, MfcRequest::STATE_STEP2], true)) {
+            $registeredRequest = $mfcApiClient->registerRequestByApplicant($req);
+            $req->setMfcCode($registeredRequest->requestId);
+
+            $this->applyTransition($req, $em, $sm, 'finish');
+
+            return $this->render('mfc/success.html.twig');
+        }
+
+        return $this->redirectToCurrentStep($req);
     }
 
     #[Route('/workflow/{id}/back', name: 'mfc_back', methods: ['POST'])]

@@ -6,6 +6,8 @@ namespace App\Service\MfcApi;
 
 use App\DTO\ApplicantStatus;
 use App\DTO\ApplicantStatusEnum;
+use App\DTO\RegisterRequestResult;
+use App\Entity\MfcRequest;
 
 class MfcApiClientStub implements MfcApiClientInterface
 {
@@ -28,5 +30,12 @@ class MfcApiClientStub implements MfcApiClientInterface
                 userCode: 'STUB-USER-001',
             ),
         ];
+    }
+
+    public function registerRequestByApplicant(MfcRequest $mfcRequest): RegisterRequestResult
+    {
+        return new RegisterRequestResult(
+            requestId: sprintf('%06d', rand(1, 999999)),
+        );
     }
 }

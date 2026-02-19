@@ -43,6 +43,9 @@ class MfcRequest
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt;
 
+    #[ORM\Column(length: 32, unique: true, nullable: true)]
+    private ?string $mfcCode = null;
+
     public function __construct()
     {
         $now = new \DateTimeImmutable();
@@ -142,5 +145,17 @@ class MfcRequest
         if ($this->files->removeElement($file)) {
             $file->setRequest(null);
         }
+    }
+
+    public function getMfcCode(): ?string
+    {
+        return $this->mfcCode;
+    }
+
+    public function setMfcCode(string $mfcCode): static
+    {
+        $this->mfcCode = $mfcCode;
+
+        return $this;
     }
 }
