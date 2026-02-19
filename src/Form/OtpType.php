@@ -36,7 +36,7 @@ class OtpType extends AbstractType
             ->add('submit', SubmitType::class, [
                 'label' => 'Войти',
                 'attr' => [
-                    'class' => 'btn-primary otp-btn',
+                    'class' => 'btn-primary otp-btn m-0 ',
                 ],
             ])
         ;

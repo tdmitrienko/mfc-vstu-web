@@ -7,7 +7,7 @@
         <div class="otp-box">
             {# Последняя ошибка Security (из authenticator) #}
             {% if last_auth_error %}
-                <div class="form-error auth-error">
+                <div class="auth-error">
                     {{ last_auth_error.messageKey|trans(last_auth_error.messageData, 'security') }}
                 </div>
             {% endif %}

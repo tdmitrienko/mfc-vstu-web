@@ -342,19 +342,36 @@ main {
 }
 
 /* ============================= */
+/*       ОШИБКИ ФОРМЫ            */
+/* ============================= */
+
+.field-error {
+    color: #dc3545;
+    font-size: 0.8rem;
+}
+
+.is-invalid {
+    border-color: #dc3545 !important;
+}
+
+.upload-box:has(.is-invalid) {
+    border-color: #dc3545;
+}
+
+.auth-error {
+    color: #dc3545;
+    font-size: 0.85rem;
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+/* ============================= */
 /*        ФОРМА МФЦ              */
 /* ============================= */
 
 /* Контейнер формы (широкая версия) */
 .form-wide {
     width: 480px;
-}
-
-/* Основная структура формы */
-.mfc-form {
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
 }
 
 /* Выпадающий список */
@@ -424,15 +441,14 @@ main {
 
 .upload-wrapper {
     display: flex;
-    gap: 60px;
     justify-content: center;
-    margin: 60px 0;
 }
 
 .upload-box {
     width: 180px;
     height: 180px;
     border: 2px solid #5e79a8;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;

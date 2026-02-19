@@ -44,7 +44,7 @@ class MfcStep3Type extends AbstractType
         ])->add('submit', SubmitType::class, [
             'label' => 'Отправить',
             'attr' => [
-                'class' => 'btn-primary',
+                'class' => 'btn-primary m-0',
             ],
         ]);
     }

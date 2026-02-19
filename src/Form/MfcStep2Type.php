@@ -25,7 +25,7 @@ class MfcStep2Type extends AbstractType
                 'label' => false,
                 'placeholder' => 'Выберите номер документа',
                 'attr' => [
-                    'class' => 'form-input',
+                    'class' => 'form-select',
                 ],
                 'constraints' => [
                     new Assert\NotBlank(message: 'Необходимо выбрать номер документа'),
@@ -34,7 +34,7 @@ class MfcStep2Type extends AbstractType
             ->add('submit', SubmitType::class, [
                 'label' => 'Далее',
                 'attr' => [
-                    'class' => 'btn-primary',
+                    'class' => 'btn-primary m-0',
                 ],
             ])
         ;
@@ -46,9 +46,6 @@ class MfcStep2Type extends AbstractType
             'method' => 'POST',
             'csrf_protection' => true,
             'user' => null,
-            'attr' => [
-                'class' => 'mfc-form',
-            ],
         ]);
 
         $resolver->setAllowedTypes('user', User::class);
